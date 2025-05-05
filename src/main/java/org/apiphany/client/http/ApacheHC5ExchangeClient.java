@@ -1,5 +1,7 @@
 package org.apiphany.client.http;
 
+import java.io.File;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpVersion;
@@ -32,9 +35,12 @@ import org.apiphany.ApiRequest;
 import org.apiphany.ApiResponse;
 import org.apiphany.client.ClientProperties;
 import org.apiphany.client.ExchangeClient;
+import org.apiphany.header.MapHeaderValues;
+import org.apiphany.http.HttpHeader;
 import org.apiphany.http.HttpMethod;
 import org.apiphany.http.HttpStatus;
 import org.apiphany.lang.Strings;
+import org.apiphany.lang.collections.Lists;
 import org.apiphany.lang.collections.Maps;
 import org.morphix.lang.Nullables;
 import org.morphix.lang.function.ThrowingSupplier;
@@ -137,15 +143,35 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 		addHeaders(httpUriRequest, apiRequest.getHeaders());
 		httpUriRequest.setVersion(httpVersion);
 
-		Object body = apiRequest.getBody();
-		if (null != body) {
+		if (apiRequest.hasBody()) {
 			// This entity doesn't need to be closed
 			@SuppressWarnings("resource")
-			HttpEntity httpEntity = HttpEntities.create(Strings.safeToString(body));
+			HttpEntity httpEntity = createHttpEntity(apiRequest);
 			httpUriRequest.setEntity(httpEntity);
 		}
 
 		return httpUriRequest;
+	}
+
+	/**
+	 * Creates an appropriate {@link HttpEntity} based on the request body type and headers.
+	 *
+	 * @param <T> request body type
+	 *
+	 * @param apiRequest API request object
+	 * @return HTTP entity object
+	 */
+	protected <T> HttpEntity createHttpEntity(final ApiRequest<T> apiRequest) {
+		T body = apiRequest.getBody();
+		String contentTypeValue = Lists.first(MapHeaderValues.get(HttpHeader.CONTENT_TYPE, apiRequest.getHeaders()));
+		ContentType contentType = Nullables.apply(contentTypeValue, ct -> ContentType.parse(ct).withCharset(apiRequest.getCharset()));
+		return switch(body) {
+			case String str -> HttpEntities.create(str, contentType);
+			case byte[] bytes -> HttpEntities.create(bytes, contentType);
+			case File file -> HttpEntities.create(file, contentType);
+			case Serializable serializable -> HttpEntities.create(serializable, contentType);
+			default -> HttpEntities.create(Strings.safeToString(body), contentType);
+		};
 	}
 
 	/**
@@ -180,7 +206,7 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 	 * @param httpUriRequest request to add the headers to
 	 * @param headers map of headers to add to the request
 	 */
-	protected void addHeaders(final HttpUriRequest httpUriRequest, final Map<String, List<String>> headers) {
+	public static void addHeaders(final HttpUriRequest httpUriRequest, final Map<String, List<String>> headers) {
 		Maps.safe(headers).forEach((k, v) -> v.forEach(h -> httpUriRequest.addHeader(k, h)));
 	}
 
