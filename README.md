@@ -14,6 +14,14 @@ A plugin library for Apiphany adding Apache HttpClient 5 support.
 
 ### Getting Started
 
+Project being in development, you need to build it yourself.
+
+```
+git clone git@github.com:raduking/apiphany-httpclient5.git
+cd apiphany-httpclient5
+mvn clean install
+```
+
 Maven: add this dependency to your `pom.xml`
 
 ```xml
