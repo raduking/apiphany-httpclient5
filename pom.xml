@@ -78,37 +78,6 @@
 			<artifactId>httpclient5</artifactId>
 		</dependency>
 
-		<!-- JSON/XML -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-xml</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -169,7 +138,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>${apiphanyArgLine}</argLine>
+					<argLine>${apiphanyHttpClient5ArgLine}</argLine>
 				</configuration>
 			</plugin>
 
@@ -185,7 +154,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<argLine>${apiphanyArgLine}</argLine>
+					<argLine>${apiphanyHttpClient5ArgLine}</argLine>
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>
