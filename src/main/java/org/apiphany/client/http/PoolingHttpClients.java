@@ -61,13 +61,19 @@ public interface PoolingHttpClients {
 			final Consumer<PoolingHttpClientConnectionManagerBuilder> connectionManagerBuilderCustomizer,
 			final Consumer<PoolingHttpClientConnectionManager> connectionManagerCustomizer,
 			final Consumer<HttpClientBuilder> httpClientBuilderCustomizer) {
-		PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder = createConnectionManagerBuilder(clientProperties);
+		ApacheHC5Properties apacheHC5Properties = clientProperties.getCustomProperties(ApacheHC5Properties.class);
+
+		PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder = null == apacheHC5Properties
+				? createConnectionManagerBuilder(clientProperties)
+				: createConnectionManagerBuilder(apacheHC5Properties);
 		connectionManagerBuilderCustomizer.accept(connectionManagerBuilder);
 
 		PoolingHttpClientConnectionManager connectionManager = connectionManagerBuilder.build();
 		connectionManagerCustomizer.accept(connectionManager);
 
-		RequestConfig requestConfig = createRequestConfig(clientProperties);
+		RequestConfig requestConfig = null == apacheHC5Properties
+				? createRequestConfig(clientProperties)
+				: createRequestConfig(apacheHC5Properties);
 
 		HttpClientBuilder httpClientBuilder = HttpClients.custom()
 				.setConnectionManager(connectionManager)
@@ -86,7 +92,6 @@ public interface PoolingHttpClients {
 	static PoolingHttpClientConnectionManagerBuilder createConnectionManagerBuilder(final ClientProperties clientProperties) {
 		ClientProperties.Timeout timeout = clientProperties.getTimeout();
 		ClientProperties.Connection connections = clientProperties.getConnection();
-
 		return PoolingHttpClientConnectionManagerBuilder.create()
 				.setDefaultSocketConfig(SocketConfig.custom()
 						.setSoTimeout(Timeout.of(timeout.getSocket()))
@@ -100,6 +105,25 @@ public interface PoolingHttpClients {
 	}
 
 	/**
+	 * Returns a pulling HTTP client connection manager builder configured with the given Apache HTTP Client 5 properties.
+	 *
+	 * @param apacheHC5Properties Apache HTTP Client 5 properties
+	 * @return a pulling HTTP client connection manager
+	 */
+	static PoolingHttpClientConnectionManagerBuilder createConnectionManagerBuilder(final ApacheHC5Properties apacheHC5Properties) {
+		return PoolingHttpClientConnectionManagerBuilder.create()
+				.setDefaultSocketConfig(SocketConfig.custom()
+						.setSoTimeout(apacheHC5Properties.getSocket().getTimeout())
+						.build())
+				.setDefaultConnectionConfig(ConnectionConfig.custom()
+						.setConnectTimeout(apacheHC5Properties.getConnect().getTimeout())
+						.setSocketTimeout(apacheHC5Properties.getSocket().getTimeout())
+						.build())
+				.setMaxConnPerRoute(apacheHC5Properties.getConnection().getMaxPerRoute())
+				.setMaxConnTotal(apacheHC5Properties.getConnection().getMaxTotal());
+	}
+
+	/**
 	 * Creates the {@link RequestConfig} based on the client properties and the specified Apache HTTP Client 5 properties.
 	 *
 	 * @param clientProperties generic client properties
@@ -107,18 +131,21 @@ public interface PoolingHttpClients {
 	 */
 	static RequestConfig createRequestConfig(final ClientProperties clientProperties) {
 		ClientProperties.Timeout timeout = clientProperties.getTimeout();
+		return RequestConfig.custom()
+				.setConnectionRequestTimeout(Timeout.of(timeout.getConnectionRequest()))
+				.build();
+	}
 
-		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
-				.setConnectionRequestTimeout(Timeout.of(timeout.getConnectionRequest()));
-
-		ApacheHC5Properties apacheHC5Properties = clientProperties.getCustomProperties(ApacheHC5Properties.class);
-		if (null == apacheHC5Properties) {
-			return requestConfigBuilder.build();
-		}
-		ApacheHC5Properties.Request request = apacheHC5Properties.getRequest();
-
-		return requestConfigBuilder
-				.setProtocolUpgradeEnabled(request.isProtocolUpgradeEnabled())
+	/**
+	 * Creates the {@link RequestConfig} based on the client properties and the specified Apache HTTP Client 5 properties.
+	 *
+	 * @param apacheHC5Properties Apache HTTP Client 5 properties
+	 * @return returns the request configuration object
+	 */
+	static RequestConfig createRequestConfig(final ApacheHC5Properties apacheHC5Properties) {
+		return RequestConfig.custom()
+				.setConnectionRequestTimeout(apacheHC5Properties.getConnectionRequest().getTimeout())
+				.setProtocolUpgradeEnabled(apacheHC5Properties.getRequest().isProtocolUpgradeEnabled())
 				.build();
 	}
 

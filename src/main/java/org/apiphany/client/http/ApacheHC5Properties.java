@@ -30,6 +30,21 @@ public class ApacheHC5Properties {
 	private Request request = new Request();
 
 	/**
+	 * Specific Apache HTTP Client 5 connection request properties.
+	 */
+	private ConnectionRequest connectionRequest = new ConnectionRequest();
+
+	/**
+	 * Specific Apache HTTP Client 5 connect properties.
+	 */
+	private Connect connect = new Connect();
+
+	/**
+	 * Specific Apache HTTP Client 5 socket properties.
+	 */
+	private Socket socket = new Socket();
+
+	/**
 	 * @see #toString()
 	 */
 	@Override
@@ -71,6 +86,60 @@ public class ApacheHC5Properties {
 	 */
 	public void setConnection(final Connection connection) {
 		this.connection = connection;
+	}
+
+	/**
+	 * Returns the connect properties.
+	 *
+	 * @return the connect properties
+	 */
+	public Connect getConnect() {
+		return connect;
+	}
+
+	/**
+	 * Set the connect properties.
+	 *
+	 * @param connect connect properties to set.
+	 */
+	public void setConnect(final Connect connect) {
+		this.connect = connect;
+	}
+
+	/**
+	 * Returns the connection request properties.
+	 *
+	 * @return the connection request properties
+	 */
+	public ConnectionRequest getConnectionRequest() {
+		return connectionRequest;
+	}
+
+	/**
+	 * Set the connection request properties.
+	 *
+	 * @param connect connection request properties to set.
+	 */
+	public void setConnectionRequest(final ConnectionRequest connectionRequest) {
+		this.connectionRequest = connectionRequest;
+	}
+
+	/**
+	 * Returns the socket properties.
+	 *
+	 * @return the socket properties
+	 */
+	public Socket getSocket() {
+		return socket;
+	}
+
+	/**
+	 * Set the socket properties.
+	 *
+	 * @param socket socket properties to set.
+	 */
+	public void setConnect(final Socket socket) {
+		this.socket = socket;
 	}
 
 	/**
@@ -177,7 +246,7 @@ public class ApacheHC5Properties {
 		 *
 		 * @param timeToLive time to live to set.
 		 */
-		public void setTimeToLive(Timeout timeToLive) {
+		public void setTimeToLive(final Timeout timeToLive) {
 			this.timeToLive = timeToLive;
 		}
 	}
@@ -198,6 +267,13 @@ public class ApacheHC5Properties {
 		 * The HTTP protocol version to use. Defaults to the value from {@link HttpVersion#DEFAULT}.
 		 */
 		private String protocolVersion = HttpVersion.DEFAULT.getProtocol();
+
+		/**
+		 * Default constructor.
+		 */
+		protected Request() {
+			// empty
+		}
 
 		/**
 		 * Returns a JSON representation of this Request object.
@@ -256,6 +332,120 @@ public class ApacheHC5Properties {
 		 */
 		public void setProtocolVersion(final String protocolVersion) {
 			this.protocolVersion = protocolVersion;
+		}
+	}
+
+	/**
+	 * Apache HTTP Client 5 connect properties.
+	 *
+	 * @author Radu Sebastian LAZIN
+	 */
+	public static class Connect {
+
+		/**
+		 * Connect timeout is {@link Timeout#INFINITE} by default.
+		 */
+		private Timeout timeout = Timeout.INFINITE;
+
+		/**
+		 * Default constructor.
+		 */
+		protected Connect() {
+			// empty
+		}
+
+		/**
+		 * Returns the connect timeout.
+		 *
+		 * @return the connect timeout.
+		 */
+		public Timeout getTimeout() {
+			return timeout;
+		}
+
+		/**
+		 * Sets the connect timeout.
+		 *
+		 * @param timeout timeout to set
+		 */
+		public void setTimeout(final Timeout timeout) {
+			this.timeout = timeout;
+		}
+	}
+
+	/**
+	 * Apache HTTP Client 5 connection request properties.
+	 *
+	 * @author Radu Sebastian LAZIN
+	 */
+	public static class ConnectionRequest {
+
+		/**
+		 * Connection request timeout is {@link Timeout#INFINITE} by default.
+		 */
+		private Timeout timeout = Timeout.INFINITE;
+
+		/**
+		 * Default constructor.
+		 */
+		protected ConnectionRequest() {
+			// empty
+		}
+
+		/**
+		 * Returns the connection request timeout.
+		 *
+		 * @return the connection request timeout.
+		 */
+		public Timeout getTimeout() {
+			return timeout;
+		}
+
+		/**
+		 * Sets the connection request timeout.
+		 *
+		 * @param timeout timeout to set
+		 */
+		public void setTimeout(final Timeout timeout) {
+			this.timeout = timeout;
+		}
+	}
+
+	/**
+	 * Apache HTTP Client 5 socket properties.
+	 *
+	 * @author Radu Sebastian LAZIN
+	 */
+	public static class Socket {
+
+		/**
+		 * Socket timeout is {@link Timeout#INFINITE} by default.
+		 */
+		private Timeout timeout = Timeout.INFINITE;
+
+		/**
+		 * Default constructor.
+		 */
+		protected Socket() {
+			// empty
+		}
+
+		/**
+		 * Returns the socket timeout.
+		 *
+		 * @return the socket timeout.
+		 */
+		public Timeout getTimeout() {
+			return timeout;
+		}
+
+		/**
+		 * Sets the socket timeout.
+		 *
+		 * @param timeout timeout to set
+		 */
+		public void setTimeout(final Timeout timeout) {
+			this.timeout = timeout;
 		}
 	}
 }
