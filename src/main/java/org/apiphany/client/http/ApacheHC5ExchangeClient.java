@@ -17,7 +17,6 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpPut;
 import org.apache.hc.client5.http.classic.methods.HttpTrace;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
-import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
@@ -30,7 +29,6 @@ import org.apache.hc.core5.http.ProtocolVersion;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.HttpEntities;
-import org.apache.hc.core5.util.Timeout;
 import org.apiphany.ApiRequest;
 import org.apiphany.ApiResponse;
 import org.apiphany.client.ClientProperties;
@@ -105,16 +103,7 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 		if (null == properties) {
 			return;
 		}
-		ApacheHC5Properties.Request request = properties.getRequest();
-		ClientProperties.Timeout timeout = getClientProperties().getTimeout();
-
-		RequestConfig requestConfig = RequestConfig.custom()
-				.setConnectionRequestTimeout(Timeout.ofMilliseconds(timeout.getConnectionRequestTimeout()))
-				.setProtocolUpgradeEnabled(request.isProtocolUpgradeEnabled())
-				.build();
-		httpClientBuilder.setDefaultRequestConfig(requestConfig);
-
-		this.httpVersion = request.getHttpProtocolVersion();
+		this.httpVersion = properties.getRequest().getHttpProtocolVersion();
 	}
 
 	/**
@@ -166,7 +155,7 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 		T body = apiRequest.getBody();
 		String contentTypeValue = Lists.first(MapHeaderValues.get(HttpHeader.CONTENT_TYPE, apiRequest.getHeaders()));
 		ContentType contentType = Nullables.apply(contentTypeValue, ct -> ContentType.parse(ct).withCharset(apiRequest.getCharset()));
-		return switch(body) {
+		return switch (body) {
 			case String str -> HttpEntities.create(str, contentType);
 			case byte[] bytes -> HttpEntities.create(bytes, contentType);
 			case File file -> HttpEntities.create(file, contentType);
