@@ -118,7 +118,7 @@ public class ApacheHC5Properties {
 	/**
 	 * Set the connection request properties.
 	 *
-	 * @param connect connection request properties to set.
+	 * @param connectionRequest connection request properties to set.
 	 */
 	public void setConnectionRequest(final ConnectionRequest connectionRequest) {
 		this.connectionRequest = connectionRequest;

@@ -29,27 +29,68 @@ import io.micrometer.core.instrument.binder.httpcomponents.hc5.PoolingHttpClient
  */
 public class ConnectionManagerMetricsBinder implements MeterBinder {
 
+	/**
+	 * The base metric prefix for all HTTP client metrics.
+	 */
 	public static final String METRIC_HTTP_CLIENT_PREFIX = "httpcomponents.httpclient";
+
+	/**
+	 * The metric prefix for total pool statistics.
+	 */
 	public static final String METRIC_POOL_TOTAL_PREFIX = "pool.total";
+
+	/**
+	 * The metric prefix for route-specific pool statistics.
+	 */
 	public static final String METRIC_POOL_ROUTE_PREFIX = "pool.route";
 
+	/**
+	 * The connection pool control instance being monitored.
+	 */
 	private final ConnPoolControl<HttpRoute> connPoolControl;
+
+	/**
+	 * The name of the HTTP client being monitored.
+	 */
 	private final String clientName;
 
+	/**
+	 * Constructs a new metrics binder for the given connection pool control.
+	 *
+	 * @param connPoolControl the connection pool control to monitor
+	 * @param clientName the name of the HTTP client (used in metric names)
+	 */
 	private ConnectionManagerMetricsBinder(final ConnPoolControl<HttpRoute> connPoolControl, final String clientName) {
 		this.connPoolControl = connPoolControl;
 		this.clientName = clientName;
 	}
 
+	/**
+	 * Creates a new metrics binder for the given connection pool control.
+	 *
+	 * @param connPoolControl the connection pool control to monitor
+	 * @param clientName the name of the HTTP client (used in metric names)
+	 * @return a new ConnectionManagerMetricsBinder instance
+	 */
 	public static ConnectionManagerMetricsBinder of(final ConnPoolControl<HttpRoute> connPoolControl, final String clientName) {
 		return new ConnectionManagerMetricsBinder(connPoolControl, clientName);
 	}
 
+	/**
+	 * Binds the metrics to the specified meter registry.
+	 *
+	 * @param registry the meter registry to bind metrics to
+	 */
 	@Override
 	public void bindTo(final MeterRegistry registry) {
 		registerTotalMetrics(registry);
 	}
 
+	/**
+	 * Registers all total pool metrics with the meter registry.
+	 *
+	 * @param registry the meter registry to register metrics with
+	 */
 	private void registerTotalMetrics(final MeterRegistry registry) {
 		// httpcomponents.httpclient.${clientName}.pool.total.max
 		Gauge.builder(metricName(METRIC_HTTP_CLIENT_PREFIX, clientName, METRIC_POOL_TOTAL_PREFIX, "max"), connPoolControl,
@@ -82,6 +123,12 @@ public class ConnectionManagerMetricsBinder implements MeterBinder {
 				.register(registry);
 	}
 
+	/**
+	 * Builds a metric name from the given path components.
+	 *
+	 * @param paths the components of the metric name
+	 * @return the constructed metric name //
+	 */
 	private static String metricName(final String... paths) {
 		return PropertyNameBuilder.builder()
 				.path(paths)

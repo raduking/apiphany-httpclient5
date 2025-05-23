@@ -53,6 +53,7 @@ public interface PoolingHttpClients {
 	 * @param clientProperties HTTP client properties
 	 * @param connectionManagerBuilderCustomizer builder customizer
 	 * @param connectionManagerCustomizer connection manager customizer
+	 * @param httpClientBuilderCustomizer HTTP client builder customizer
 	 * @return HTTP client
 	 */
 	@SuppressWarnings("resource")
