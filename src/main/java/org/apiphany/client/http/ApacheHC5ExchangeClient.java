@@ -107,6 +107,14 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 	}
 
 	/**
+	 * @see #close()
+	 */
+	@Override
+	public void close() throws Exception {
+		httpClient.close();
+	}
+
+	/**
 	 * @see ExchangeClient#exchange(ApiRequest)
 	 */
 	@SuppressWarnings("resource")
