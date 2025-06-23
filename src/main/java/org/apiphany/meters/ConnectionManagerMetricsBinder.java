@@ -101,13 +101,13 @@ public class ConnectionManagerMetricsBinder implements MeterBinder {
 		// httpcomponents.httpclient.${clientName}.pool.total.connections.available
 		Gauge.builder(metricName(METRIC_HTTP_CLIENT_PREFIX, clientName, METRIC_POOL_TOTAL_PREFIX, "connections", "available"), connPoolControl,
 				cpc -> cpc.getTotalStats().getAvailable())
-				.description("The number of persistent and available connections for all routes.")
+				.description("The number of idle persistent connections for all routes.")
 				.register(registry);
 
 		// httpcomponents.httpclient.${clientName}.pool.total.connections.leased
 		Gauge.builder(metricName(METRIC_HTTP_CLIENT_PREFIX, clientName, METRIC_POOL_TOTAL_PREFIX, "connections", "leased"), connPoolControl,
 				cpc -> cpc.getTotalStats().getLeased())
-				.description("The number of persistent and leased connections for all routes.")
+				.description("The number of persistent connections tracked by the connection manager currently being used to execute requests for all routes.")
 				.register(registry);
 
 		// httpcomponents.httpclient.${clientName}.pool.total.pending
