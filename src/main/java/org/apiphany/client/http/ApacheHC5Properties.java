@@ -45,6 +45,13 @@ public class ApacheHC5Properties {
 	private Socket socket = new Socket();
 
 	/**
+	 * Default constructor.
+	 */
+	public ApacheHC5Properties() {
+		// empty
+	}
+
+	/**
 	 * @see #toString()
 	 */
 	@Override
