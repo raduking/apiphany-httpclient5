@@ -78,6 +78,7 @@ public class ConnectionManagerMetricsBinder implements MeterBinder {
 	 *
 	 * @param connPoolControl the connection pool control to monitor
 	 * @param clientName the name of the HTTP client (used in metric names)
+	 * @param tags metric tags
 	 * @return a new ConnectionManagerMetricsBinder instance
 	 */
 	public static ConnectionManagerMetricsBinder of(final ConnPoolControl<HttpRoute> connPoolControl, final String clientName, final String... tags) {
