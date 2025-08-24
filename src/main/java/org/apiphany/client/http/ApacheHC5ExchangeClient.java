@@ -34,9 +34,11 @@ import org.apiphany.ApiResponse;
 import org.apiphany.client.ClientProperties;
 import org.apiphany.client.ExchangeClient;
 import org.apiphany.header.MapHeaderValues;
+import org.apiphany.http.HttpException;
 import org.apiphany.http.HttpHeader;
 import org.apiphany.http.HttpMethod;
 import org.apiphany.http.HttpStatus;
+import org.apiphany.http.ResolvedContentType;
 import org.apiphany.lang.Strings;
 import org.apiphany.lang.collections.Lists;
 import org.apiphany.lang.collections.Maps;
@@ -188,8 +190,13 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 		HttpStatus httpStatus = HttpStatus.from(response.getCode());
 
 		Map<String, List<String>> headers = Nullables.apply(response.getHeaders(), ApacheHC5ExchangeClient::toHttpHeadersMap);
-		String stringBody = ThrowingSupplier.unchecked(() -> EntityUtils.toString(httpEntity)).get();
-		U body = convertBody(apiRequest, headers, stringBody);
+		ResolvedContentType resolvedContentType = ResolvedContentType.from(httpEntity.getContentType(), httpEntity.getContentEncoding());
+		if (httpStatus.isError()) {
+			throw new HttpException(httpStatus, StringHttpContentConverter.instance().from(httpEntity, resolvedContentType, String.class));
+		}
+
+		byte[] bodyBytes = ThrowingSupplier.unchecked(() -> EntityUtils.toByteArray(httpEntity)).get();
+		U body = convertBody(apiRequest, resolvedContentType, headers, bodyBytes);
 
 		return ApiResponse.create(body)
 				.status(httpStatus)
