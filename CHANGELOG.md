@@ -8,6 +8,18 @@ Streamline versions with all Apiphany libraries.
 
 ---
 
+`1.0.4`
+
+Streamline versions with all Apiphany libraries.
+
+---
+
+`1.0.3`
+
+Streamline versions with all Apiphany libraries.
+
+---
+
 `1.0.2`
 
 Upgraded parent to `3.5.3`.
