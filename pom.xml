@@ -17,7 +17,7 @@
 
 	<groupId>io.github.raduking</groupId>
 	<artifactId>apiphany-httpclient5</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.9</version>
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -74,13 +74,21 @@
 		<dependency>
 			<groupId>io.github.raduking</groupId>
 			<artifactId>apiphany</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.9</version>
 		</dependency>
 
 		<!-- HTTP Client -->
 		<dependency>
 			<groupId>org.apache.httpcomponents.client5</groupId>
 			<artifactId>httpclient5</artifactId>
+		</dependency>
+
+		<!-- Metrics/Tracing -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- Testing -->
