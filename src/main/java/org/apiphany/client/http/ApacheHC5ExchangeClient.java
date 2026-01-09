@@ -187,7 +187,7 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 	@SuppressWarnings("resource")
 	protected <T, U> ApiResponse<U> buildResponse(final ApiRequest<T> apiRequest, final ClassicHttpResponse response) {
 		HttpEntity httpEntity = response.getEntity();
-		HttpStatus httpStatus = HttpStatus.from(response.getCode());
+		HttpStatus httpStatus = HttpStatus.fromCode(response.getCode());
 
 		Map<String, List<String>> headers = Nullables.apply(response.getHeaders(), ApacheHC5ExchangeClient::toHttpHeadersMap);
 		HttpContentType resolvedContentType = HttpContentType.from(httpEntity.getContentType(), httpEntity.getContentEncoding());
