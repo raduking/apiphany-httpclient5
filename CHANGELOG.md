@@ -2,6 +2,13 @@
 
 ---
 
+`1.0.23`
+
+- Streamline versions with all Apiphany libraries.
+- Updated `ApacheHC5ExchangeClient` to add common headers and tracing headers.
+
+---
+
 `1.0.21`
 
 - Streamline versions with all Apiphany libraries.

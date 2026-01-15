@@ -122,6 +122,9 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 	@SuppressWarnings("resource")
 	@Override
 	public <T, U> ApiResponse<U> exchange(final ApiRequest<T> apiRequest) {
+		apiRequest.addHeaders(getTracingHeaders());
+		apiRequest.addHeaders(getCommonHeaders());
+
 		HttpUriRequest httpUriRequest = buildRequest(apiRequest);
 		HttpClientResponseHandler<ApiResponse<U>> responseHandler = httpResponse -> buildResponse(apiRequest, httpResponse);
 		return ThrowingSupplier
@@ -139,7 +142,6 @@ public class ApacheHC5ExchangeClient extends AbstractHttpExchangeClient {
 	 */
 	protected <T> HttpUriRequest buildRequest(final ApiRequest<T> apiRequest) {
 		HttpUriRequest httpUriRequest = toHttpUriRequest(apiRequest.getUri(), apiRequest.<HttpMethod>getMethod());
-		addTracingHeaders(apiRequest.getHeaders());
 		addHeaders(httpUriRequest, apiRequest.getHeaders());
 		httpUriRequest.setVersion(httpVersion);
 
