@@ -51,6 +51,10 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+		<!-- Publishing dependencies versions -->
+		<maven.gpg.plugin.version>3.2.8</maven.gpg.plugin.version>
+		<central.publishing.maven.plugin.version>0.9.0</central.publishing.maven.plugin.version>
+
 		<!-- Testing dependencies versions -->
 		<pitest.maven.plugin.version>1.22.0</pitest.maven.plugin.version>
 		<pitest.junit5.plugin.version>1.2.3</pitest.junit5.plugin.version>
@@ -281,7 +285,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>${gpg.plugin.version}</version>
+						<version>${maven.gpg.plugin.version}</version>
 						<executions>
 							<execution>
 							<id>sign-artifacts</id>
@@ -304,7 +308,7 @@
 					<plugin>
 						<groupId>org.sonatype.central</groupId>
 						<artifactId>central-publishing-maven-plugin</artifactId>
-						<version>${central.publishing.plugin.version}</version>
+						<version>${central.publishing.maven.plugin.version}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<autoPublish>true</autoPublish>
